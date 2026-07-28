@@ -1,0 +1,12 @@
+@extends('layouts.site')
+
+@section('title', "Création de marques d'apéritif — FAR")
+@section('meta_description', "FAR conçoit des marques et des produits d'apéritif, de l'idée à la mise sur le marché — recette, identité, production.")
+
+@section('content')
+<div class="wrap prose">
+    <h1>Une marque, de l'idée au produit fini</h1>
+
+    <p>Créer une marque ne s'arrête pas à une bonne idée. Ça veut dire imaginer un concept, mettre au point la recette, choisir — ou parfois concevoir soi-même — les machines qui la produiront, et l'amener jusqu'au rayon ou au bar. C'est ce chemin complet que je maîtrise, de la première esquisse à la version testée et retestée, jusqu'au lancement. Plus de 10 produits ont déjà vu le jour de cette manière et trouvé leur place en Suisse.</p>
+</div>
+@endsection
