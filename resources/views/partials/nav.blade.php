@@ -9,14 +9,14 @@
         </a>
 
         <input type="checkbox" id="nav-toggle" class="nav-toggle">
-        <label for="nav-toggle" class="nav-toggle__label" aria-label="Ouvrir le menu">
+        <label for="nav-toggle" class="nav-toggle__label" aria-label="{{ __('pages.menu') }}">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
                 <path d="M4 7h16M4 12h16M4 17h16"/>
             </svg>
         </label>
 
-        <nav class="site-nav" aria-label="Navigation principale">
+        <nav class="site-nav" aria-label="{{ __('pages.main_nav') }}">
             <div class="site-nav__items">
                 <a href="{{ route_ts('home', ['locale' => $locale]) }}" @class(['is-active' => request()->routeIs('home')])>{{ __('nav.home') }}</a>
                 <a href="{{ route_ts('about', ['locale' => $locale]) }}" @class(['is-active' => request()->routeIs('about')])>{{ __('nav.about') }}</a>

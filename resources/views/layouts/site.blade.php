@@ -9,6 +9,10 @@
         $currentRouteName = \Illuminate\Support\Facades\Route::currentRouteName();
         $currentParams = request()->route()?->parameters() ?? [];
     @endphp
+    @if (in_array(app()->getLocale(), config('site.draft_locales'), true))
+        <meta name="robots" content="noindex, nofollow">
+    @endif
+
     @if ($currentRouteName)
         <link rel="canonical" href="{{ route_ts($currentRouteName, $currentParams) }}">
         @foreach (config('site.active_locales') as $altLocale)
@@ -32,7 +36,7 @@
     @stack('head')
 </head>
 <body>
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <a class="skip-link" href="#contenu">{{ __("pages.skip_link") }}</a>
     @include('partials.nav')
     <main id="contenu">
         @yield('content')

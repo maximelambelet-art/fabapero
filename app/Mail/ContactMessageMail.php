@@ -19,7 +19,7 @@ class ContactMessageMail extends Mailable
     public function build(): self
     {
         return $this
-            ->subject('Nouveau message via le formulaire de contact — fabapero.ch')
+            ->subject(__('contact.subject'))
             ->replyTo($this->senderEmail, $this->senderName)
             ->view('emails.contact');
     }

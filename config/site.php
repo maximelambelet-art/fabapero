@@ -1,14 +1,17 @@
 <?php
 
 return [
-    // Locales fully written and served. Add a locale here once its content
-    // and resources/lang/{locale}/* files exist — routing and hreflang pick
-    // it up automatically, no other code change needed.
+    // Published locales: routed, announced through hreflang, and listed in
+    // the sitemap. Moving a locale from draft_locales to here is the single
+    // switch that puts a language live.
     'active_locales' => ['fr'],
 
-    'default_locale' => 'fr',
+    // Reachable by typing the URL, so the client can proof-read them, but
+    // kept out of the sitemap and hreflang and served with noindex — a
+    // half-reviewed translation must not reach search results.
+    'draft_locales' => ['de', 'en'],
 
-    'available_locales' => ['fr', 'de', 'en'],
+    'default_locale' => 'fr',
 
     'name' => 'Fabriques d\'Apéro Réunies',
 

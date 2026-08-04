@@ -1,6 +1,6 @@
 @extends('layouts.site')
 
-@section('title', $post->title.' — Fabriques d\'Apéro Réunies')
+@section('title', $post->title.' — '.config('site.name'))
 @section('meta_description', $post->metaDescription)
 
 @section('content')
@@ -16,7 +16,7 @@
     </article>
 
     <section class="section">
-        <a class="link-arrow" href="{{ route_ts('news.index', ['locale' => app()->getLocale()]) }}">Toutes les actualités</a>
+        <a class="link-arrow" href="{{ route_ts('news.index', ['locale' => app()->getLocale()]) }}">{{ __('pages.news.back') }}</a>
     </section>
 
 </div>

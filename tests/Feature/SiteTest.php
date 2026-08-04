@@ -44,9 +44,55 @@ class SiteTest extends TestCase
         $this->get('/fr/contact')->assertRedirect('/fr/contact/');
     }
 
-    public function test_inactive_locale_returns_404(): void
+    public function test_unknown_locale_returns_404(): void
     {
-        $this->get('/de/')->assertNotFound();
+        $this->get('/it/')->assertNotFound();
+    }
+
+    #[DataProvider('draftLocaleProvider')]
+    public function test_draft_locale_is_reachable_but_not_indexable(string $locale): void
+    {
+        $this->get("/{$locale}/")
+            ->assertOk()
+            ->assertSee('content="noindex, nofollow"', false);
+    }
+
+    public static function draftLocaleProvider(): array
+    {
+        return [['de'], ['en']];
+    }
+
+    public function test_published_locale_is_indexable(): void
+    {
+        $this->get('/fr/')->assertDontSee('noindex', false);
+    }
+
+    public function test_sitemap_excludes_draft_locales(): void
+    {
+        $sitemap = $this->get('/sitemap.xml')->assertOk()->getContent();
+
+        foreach (config('site.draft_locales') as $locale) {
+            $this->assertStringNotContainsString("/{$locale}/", $sitemap);
+        }
+    }
+
+    public function test_hreflang_only_announces_published_locales(): void
+    {
+        $html = $this->get('/fr/')->assertOk()->getContent();
+
+        foreach (config('site.draft_locales') as $locale) {
+            $this->assertStringNotContainsString('hreflang="'.$locale.'"', $html);
+        }
+    }
+
+    public function test_every_locale_translates_the_home_page(): void
+    {
+        foreach (array_merge(config('site.active_locales'), config('site.draft_locales')) as $locale) {
+            $html = $this->get("/{$locale}/")->assertOk()->getContent();
+
+            // An untranslated key renders as the raw dot-path.
+            $this->assertDoesNotMatchRegularExpression('/pages\.[a-z_]+\./', $html, "Clé non traduite en {$locale}");
+        }
     }
 
     public function test_unknown_activity_slug_returns_404(): void
@@ -71,6 +117,34 @@ class SiteTest extends TestCase
     {
         $this->post('/fr/contact/', [])
             ->assertSessionHasErrors(['name', 'email', 'message']);
+    }
+
+    /**
+     * Errors surviving in the session is not enough: an intermediate redirect
+     * once consumed them, leaving the visitor on a blank form with no reason
+     * given. This follows the redirect and reads the rendered page.
+     */
+    public function test_validation_errors_are_shown_on_the_page(): void
+    {
+        $this->followingRedirects()
+            ->post('/fr/contact/', [])
+            ->assertOk()
+            ->assertSee(__('contact.name.required'))
+            ->assertSee(__('contact.email.required'));
+    }
+
+    public function test_success_message_is_shown_on_the_page(): void
+    {
+        Mail::fake();
+
+        $this->followingRedirects()
+            ->post('/fr/contact/', [
+                'name' => 'Jean Testeur',
+                'email' => 'jean@example.com',
+                'message' => 'Bonjour.',
+            ])
+            ->assertOk()
+            ->assertSee(__('pages.contact.sent'));
     }
 
     public function test_honeypot_blocks_mail_but_looks_successful(): void

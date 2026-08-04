@@ -14,9 +14,14 @@ Route::get('/', function () {
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
-$activeLocales = implode('|', array_map('preg_quote', config('site.active_locales')));
+// Draft locales are routable so they can be proof-read; the layout marks
+// them noindex and the sitemap ignores them until they are published.
+$servedLocales = implode('|', array_map(
+    'preg_quote',
+    array_merge(config('site.active_locales'), config('site.draft_locales'))
+));
 
-Route::middleware(['locale'])->where(['locale' => $activeLocales])->group(function () {
+Route::middleware(['locale'])->where(['locale' => $servedLocales])->group(function () {
     Route::get('/{locale}/', [PageController::class, 'home'])->name('home');
     Route::get('/{locale}/qui-sommes-nous/', [PageController::class, 'about'])->name('about');
     Route::get('/{locale}/nos-activites/', [PageController::class, 'activitiesIndex'])->name('activities.index');

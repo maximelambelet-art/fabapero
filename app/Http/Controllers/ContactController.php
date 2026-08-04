@@ -6,36 +6,40 @@ use App\Mail\ContactMessageMail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class ContactController extends Controller
 {
     public function show(): View
     {
-        return view('pages.'.app()->getLocale().'.contact');
+        return view('pages.contact');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:150',
             'email' => 'required|email|max:255',
             'message' => 'required|string|max:5000',
-        ], [
-            'name.required' => 'Merci d\'indiquer votre nom.',
-            'name.max' => 'Le nom ne doit pas dépasser 150 caractères.',
-            'email.required' => 'Merci d\'indiquer votre e-mail.',
-            'email.email' => 'Merci d\'indiquer une adresse e-mail valide.',
-            'email.max' => 'L\'e-mail ne doit pas dépasser 255 caractères.',
-            'message.required' => 'Merci de décrire votre projet en quelques mots.',
-            'message.max' => 'Le message ne doit pas dépasser 5000 caractères.',
-        ]);
+        ], __('contact'));
+
+        // Not $request->validate(): that redirects back through a URL without
+        // the trailing slash, and the resulting 301 consumes the flashed
+        // errors, so the visitor would land on a blank form with no reason
+        // given. Redirecting explicitly keeps the messages.
+        if ($validator->fails()) {
+            return $this->backToForm()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $validated = $validator->validated();
 
         // Honeypot: hidden field a real visitor never fills. If it's set,
         // pretend success without sending, so bots don't learn to adapt.
         if ($request->filled('website')) {
-            return redirect()->away(route_ts('contact', ['locale' => app()->getLocale()]))
-                ->with('contactSent', true);
+            return $this->backToForm()->with('contactSent', true);
         }
 
         Mail::to(config('site.email'))->send(new ContactMessageMail(
@@ -44,7 +48,11 @@ class ContactController extends Controller
             messageBody: $validated['message'],
         ));
 
-        return redirect()->away(route_ts('contact', ['locale' => app()->getLocale()]))
-            ->with('contactSent', true);
+        return $this->backToForm()->with('contactSent', true);
+    }
+
+    private function backToForm(): RedirectResponse
+    {
+        return redirect()->away(route_ts('contact', ['locale' => app()->getLocale()]));
     }
 }

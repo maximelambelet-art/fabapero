@@ -1,13 +1,13 @@
 @extends('layouts.site')
 
-@section('title', 'Actualités — Fabriques d\'Apéro Réunies')
-@section('meta_description', 'Tendances, recettes et coulisses de FAR.')
+@section('title', __('pages.news.title'))
+@section('meta_description', __('pages.news.meta'))
 
 @section('content')
 <div class="wrap">
 
     <section class="section">
-        <h1 class="page-title">Actualités</h1>
+        <h1 class="page-title">{{ __('pages.news.h1') }}</h1>
     </section>
 
     <section class="section">
@@ -19,7 +19,7 @@
                     <p>{{ $post->excerpt }}</p>
                 </article>
             @empty
-                <p>Les premiers articles arrivent bientôt.</p>
+                <p>{{ __('pages.news.empty') }}</p>
             @endforelse
         </div>
     </section>

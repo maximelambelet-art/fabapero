@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Support\Blog\BlogRepository;
-use Illuminate\Support\Facades\View;
-use Illuminate\View\View as ViewContract;
+use Illuminate\View\View;
 
 class PageController extends Controller
 {
-    private const ACTIVITY_SLUGS = [
+    public const ACTIVITY_SLUGS = [
         'creation-de-marques',
         'recettes-et-produits',
         'low-et-sans-alcool',
@@ -17,51 +16,42 @@ class PageController extends Controller
 
     public function __construct(private readonly BlogRepository $blog) {}
 
-    public function home(): ViewContract
+    public function home(): View
     {
-        return view('pages.'.app()->getLocale().'.home', [
+        return view('pages.home', [
             'recentPosts' => array_slice($this->blog->all(app()->getLocale()), 0, 3),
         ]);
     }
 
-    public function about(): ViewContract
+    public function about(): View
     {
-        return $this->render('qui-sommes-nous');
+        return view('pages.about');
     }
 
-    public function activitiesIndex(): ViewContract
+    public function activitiesIndex(): View
     {
-        return $this->render('nos-activites.index');
+        return view('pages.activities');
     }
 
-    public function activitiesShow(string $locale, string $slug): ViewContract
+    public function activitiesShow(string $locale, string $slug): View
     {
         abort_unless(in_array($slug, self::ACTIVITY_SLUGS, true), 404);
 
-        return $this->render('nos-activites.'.$slug);
+        return view('pages.activity', ['slug' => $slug]);
     }
 
-    public function services(): ViewContract
+    public function services(): View
     {
-        return $this->render('services');
+        return view('pages.services');
     }
 
-    public function legal(): ViewContract
+    public function legal(): View
     {
-        return $this->render('mentions-legales');
+        return view('pages.legal');
     }
 
-    public function privacy(): ViewContract
+    public function privacy(): View
     {
-        return $this->render('politique-de-confidentialite');
-    }
-
-    private function render(string $page): ViewContract
-    {
-        $view = 'pages.'.app()->getLocale().'.'.$page;
-
-        abort_unless(View::exists($view), 404);
-
-        return view($view);
+        return view('pages.privacy');
     }
 }
