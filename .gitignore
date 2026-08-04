@@ -1,3 +1,5 @@
+# public/build is deliberately NOT ignored: Infomaniak's shared hosting has
+# no Node, so the compiled CSS is committed and deployed as-is.
 *.log
 .DS_Store
 .env
@@ -14,7 +16,6 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage

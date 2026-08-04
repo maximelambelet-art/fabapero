@@ -1,9 +1,690 @@
 @import 'tailwindcss';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+@source '../views';
+@source '../../app';
+
+/* ---------------------------------------------------------------
+   Fonts — self-hosted, see vite.config.js for why.
+   Both families are variable fonts: one file covers every weight.
+   --------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/Fraunces-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/Fraunces-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/InstrumentSans-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/InstrumentSans-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---------------------------------------------------------------
+   Design tokens
+   --------------------------------------------------------------- */
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+    --color-ground: #f8f5ef;
+    --color-ground-deep: #f0ebe1;
+    --color-surface: #ffffff;
+    --color-ink: #1f1b16;
+    --color-ink-soft: #6f6659;
+    --color-rule: #e5dccd;
+    --color-accent: #c1502e;
+    --color-accent-deep: #9d3d20;
+    --color-accent-wash: #f6e9e2;
+
+    --container-measure: 68ch;
+    --container-page: 1120px;
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+body {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 0, 'WONK' 0;
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+}
+
+a {
+    color: var(--color-accent-deep);
+    text-underline-offset: 0.18em;
+}
+
+a:hover { color: var(--color-accent); }
+
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--color-ink);
+    color: var(--color-ground);
+    padding: 0.7rem 1.1rem;
+    z-index: 50;
+    border-radius: 0 0 4px 0;
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    left: 0;
+    color: var(--color-ground);
+}
+
+/* ---------------------------------------------------------------
+   Layout primitives
+   --------------------------------------------------------------- */
+
+.wrap {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+.prose {
+    max-width: var(--container-measure);
+}
+
+.prose > * + * { margin-top: 1.35rem; }
+
+.prose h2 {
+    font-size: clamp(1.5rem, 3vw, 1.9rem);
+    margin-top: 2.75rem;
+}
+
+.prose h3 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+}
+
+.prose ul, .prose ol { padding-left: 1.25rem; }
+
+.prose li + li { margin-top: 0.4rem; }
+
+.prose hr {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+    margin-block: 2.5rem;
+}
+
+main {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(4rem, 9vw, 7rem);
+}
+
+.section + .section { margin-top: clamp(3.5rem, 8vw, 6rem); }
+
+.section-outro { margin-top: 1.6rem; }
+
+.section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 0.9rem;
+}
+
+/* ---------------------------------------------------------------
+   Header
+   --------------------------------------------------------------- */
+
+.site-header {
+    background: var(--color-ground);
+    border-bottom: 1px solid var(--color-rule);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1rem;
+    flex-wrap: wrap;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: var(--color-ink);
+}
+
+.brand__mark {
+    width: 2.1rem;
+    height: 2.1rem;
+    flex: none;
+}
+
+.brand__name {
+    font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 0, 'WONK' 0;
+    font-weight: 600;
+    font-size: 1.02rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    max-width: 15ch;
+}
+
+.nav-toggle { display: none; }
+
+.nav-toggle__label {
+    display: none;
+    cursor: pointer;
+    padding: 0.4rem;
+    line-height: 0;
+    color: var(--color-ink);
+}
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.site-nav a {
+    color: var(--color-ink);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding-block: 0.2rem;
+    border-bottom: 1.5px solid transparent;
+}
+
+.site-nav a:hover { color: var(--color-accent-deep); }
+
+.site-nav a.is-active {
+    color: var(--color-accent-deep);
+    border-bottom-color: var(--color-accent);
+}
+
+.site-nav a.site-nav__cta {
+    padding: 0.5rem 1.05rem;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 999px;
+}
+
+.site-nav a.site-nav__cta:hover {
+    background: var(--color-ink);
+    color: var(--color-ground);
+}
+
+.site-nav a.site-nav__cta.is-active {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-ground);
+}
+
+@media (max-width: 800px) {
+    .nav-toggle__label { display: block; }
+
+    .site-nav {
+        flex-basis: 100%;
+        display: grid;
+        /* Must be stretch, not the base rule's center: a centered grid item is
+           sized to its content and would spill out of the collapsed 0fr row. */
+        align-items: stretch;
+        grid-template-rows: 0fr;
+        overflow: hidden;
+        transition: grid-template-rows 0.25s ease;
+    }
+
+    .site-nav__items {
+        overflow: hidden;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-toggle:checked ~ .site-nav { grid-template-rows: 1fr; }
+
+    .site-nav a {
+        display: block;
+        padding-block: 0.7rem;
+        border-bottom: 0;
+    }
+
+    .site-nav a.is-active { border-bottom: 0; }
+
+    .site-nav a.site-nav__cta { margin-block: 0.6rem 1rem; }
+}
+
+@media (min-width: 801px) {
+    .site-nav__items {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+}
+
+/* ---------------------------------------------------------------
+   Hero
+   --------------------------------------------------------------- */
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.page-title {
+    margin-bottom: 0;
+}
+
+.hero h1 {
+    font-size: clamp(2.4rem, 7vw, 4.25rem);
+    margin-bottom: 1.25rem;
+}
+
+.hero__kicker {
+    font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 0, 'WONK' 0;
+    font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+    line-height: 1.35;
+    color: var(--color-accent-deep);
+    max-width: 36ch;
+    margin-bottom: 1.75rem;
+}
+
+.lede {
+    font-size: clamp(1.05rem, 2vw, 1.18rem);
+    color: var(--color-ink-soft);
+    max-width: 62ch;
+}
+
+/* ---------------------------------------------------------------
+   Buttons and links
+   --------------------------------------------------------------- */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-accent);
+    color: #fff;
+    padding: 0.75rem 1.4rem;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.97rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+}
+
+.button:hover {
+    background: var(--color-accent-deep);
+    color: #fff;
+}
+
+.link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--color-accent);
+    padding-bottom: 1px;
+}
+
+.link-arrow:hover { border-bottom-color: var(--color-accent-deep); }
+
+/* ---------------------------------------------------------------
+   Pillars and cards
+   --------------------------------------------------------------- */
+
+.pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--color-rule);
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.pillar {
+    background: var(--color-surface);
+    padding: 1.75rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.pillar__icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--color-accent);
+    margin-bottom: 0.35rem;
+}
+
+.pillar h3 { font-size: 1.2rem; margin: 0; }
+
+.pillar p {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.97rem;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    padding: 1.6rem;
+    text-decoration: none;
+    color: var(--color-ink);
+    transition: border-color 0.18s ease, transform 0.18s ease;
+}
+
+a.card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+}
+
+.card h3 { font-size: 1.18rem; margin: 0; }
+
+.card p {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.96rem;
+}
+
+.card__media {
+    margin: -1.6rem -1.6rem 0.4rem;
+    border-bottom: 1px solid var(--color-rule);
+}
+
+/* ---------------------------------------------------------------
+   Callout
+   --------------------------------------------------------------- */
+
+.callout {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 4px;
+    padding: 1.75rem 1.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    max-width: 72ch;
+}
+
+.callout p { margin: 0; }
+
+/* A quieter counterpart to .callout: used where two boxed calls to action
+   in a row would read as repetition rather than rhythm. */
+.statement {
+    border-top: 1px solid var(--color-rule);
+    padding-top: clamp(2rem, 4vw, 2.75rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+}
+
+.statement__text {
+    font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 0, 'WONK' 0;
+    font-weight: 400;
+    font-size: clamp(1.3rem, 3vw, 1.85rem);
+    line-height: 1.32;
+    letter-spacing: -0.012em;
+    max-width: 26ch;
+    margin: 0;
+    text-wrap: balance;
+}
+
+@media (min-width: 700px) {
+    .statement__text { max-width: 39ch; }
+}
+
+/* ---------------------------------------------------------------
+   Media slots — rendered only when a real file exists. An empty
+   slot outputs nothing at all: no grey box standing in for
+   content that does not exist yet.
+   --------------------------------------------------------------- */
+
+.media {
+    display: block;
+    overflow: hidden;
+    background: var(--color-ground-deep);
+    border-radius: 4px;
+}
+
+.media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media--wide { aspect-ratio: 16 / 9; }
+.media--portrait { aspect-ratio: 4 / 5; }
+.media--square { aspect-ratio: 1 / 1; }
+
+.feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: start;
+}
+
+@media (min-width: 860px) {
+    .feature--with-media { grid-template-columns: 320px minmax(0, 1fr); }
+}
+
+/* ---------------------------------------------------------------
+   Blog
+   --------------------------------------------------------------- */
+
+.post-list { display: grid; gap: 1.5rem; }
+
+.post-list__item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    padding: 1.75rem;
+}
+
+.post-list__item > * + * { margin-top: 0.6rem; }
+
+.post-list__item h2, .post-list__item h3 {
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.post-list__item h2 a, .post-list__item h3 a {
+    color: var(--color-ink);
+    text-decoration: none;
+}
+
+.post-list__item h2 a:hover, .post-list__item h3 a:hover {
+    color: var(--color-accent-deep);
+}
+
+.post-list__item p { margin: 0; color: var(--color-ink-soft); }
+
+.post-meta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    margin: 0;
+}
+
+/* ---------------------------------------------------------------
+   Forms
+   --------------------------------------------------------------- */
+
+.form {
+    max-width: 38rem;
+    display: grid;
+    gap: 1.25rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-field label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.form-field input,
+.form-field textarea {
+    font: inherit;
+    padding: 0.7rem 0.85rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    color: var(--color-ink);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+    border-color: var(--color-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-accent-wash);
+}
+
+.form-error {
+    color: var(--color-accent-deep);
+    font-size: 0.9rem;
+}
+
+.form-success {
+    background: var(--color-accent-wash);
+    border: 1px solid var(--color-accent);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    max-width: 38rem;
+}
+
+.honeypot-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* ---------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------- */
+
+.site-footer {
+    background: var(--color-ground-deep);
+    border-top: 1px solid var(--color-rule);
+    padding-block: clamp(2.5rem, 5vw, 3.5rem);
+    font-size: 0.94rem;
+}
+
+.site-footer__inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 2rem;
+    align-items: start;
+}
+
+.site-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.site-footer__heading {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    margin-bottom: 0.35rem;
+}
+
+.site-footer a {
+    color: var(--color-ink);
+    text-decoration: none;
+}
+
+.site-footer a:hover { color: var(--color-accent-deep); }
+
+.site-footer__bottom {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    color: var(--color-ink-soft);
+    font-size: 0.86rem;
 }

@@ -13,3 +13,25 @@ if (! function_exists('route_ts')) {
         return rtrim(route($name, $parameters), '/').'/';
     }
 }
+
+if (! function_exists('site_image')) {
+    /**
+     * Resolve a reserved image slot to its file, or null while none exists.
+     *
+     * Pages call this to lay themselves out: a slot that is still empty must
+     * not leave a gap where the photo will one day go, so the layout has to
+     * know the difference rather than assume the image is always there.
+     */
+    function site_image(string $name): ?string
+    {
+        foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
+            $relative = 'img/site/'.$name.'.'.$extension;
+
+            if (is_file(public_path($relative))) {
+                return $relative;
+            }
+        }
+
+        return null;
+    }
+}

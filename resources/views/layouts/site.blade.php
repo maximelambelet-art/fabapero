@@ -16,12 +16,25 @@
         @endforeach
         <link rel="alternate" hreflang="x-default" href="{{ route_ts($currentRouteName, array_merge($currentParams, ['locale' => config('site.default_locale')])) }}">
     @endif
-    <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+
+    <meta property="og:site_name" content="{{ config('site.name') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@yield('title', config('site.name'))">
+    <meta property="og:description" content="@yield('meta_description')">
+    @if ($currentRouteName)
+        <meta property="og:url" content="{{ route_ts($currentRouteName, $currentParams) }}">
+    @endif
+
+    @vite('resources/css/app.css')
     @stack('head')
 </head>
 <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
     @include('partials.nav')
-    <main>
+    <main id="contenu">
         @yield('content')
     </main>
     @include('partials.footer')

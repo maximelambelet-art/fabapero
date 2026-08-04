@@ -26,43 +26,56 @@
 
 @section('content')
 <div class="wrap">
-    <section class="hero">
+
+    <section class="hero section">
         <h1>Fabriques d'Apéro Réunies</h1>
+        <p class="hero__kicker">Une maison suisse qui conçoit des marques d'apéritif, de la recette à la machine qui la fabrique.</p>
         <p class="lede">Fabriques d'Apéro Réunies est une maison Suisse indépendante qui imagine, développe et met en mouvement des produits, des marques et des solutions autour de l'apéritif. FAR réunit au sein d'une même structure une approche créative, une capacité de développement produit, une activité de distribution et un savoir-faire en promotion et en solutions événementielles.</p>
     </section>
 
-    <section class="callout">
-        <p>De la première limonaderie artisanale du canton de Neuchâtel à la création de cocktails sans alcool qui ont conquis la Suisse : FAR est né d'une conviction simple, et d'un savoir-faire acquis sur le terrain, de la recette jusqu'à la machine qui la produit.</p>
-        <a href="{{ route_ts('about', ['locale' => app()->getLocale()]) }}">→ Qui sommes-nous</a>
+    <x-media name="accueil-bandeau" shape="wide" alt="Atelier de Fabriques d'Apéro Réunies" class="section" />
+
+    <section class="section">
+        <p class="section-label">Ce que nous faisons</p>
+        <div class="pillars">
+            <div class="pillar">
+                <x-pillar-icon name="creer" />
+                <h3>Créer</h3>
+                <p>Nous imaginons et concevons des marques et des produits d'apéritif, de l'idée jusqu'au concept prêt à produire.</p>
+            </div>
+            <div class="pillar">
+                <x-pillar-icon name="developper" />
+                <h3>Développer</h3>
+                <p>Nous créons et optimisons des recettes, de la première cuve à la production en série, avec une expertise particulière pour accompagner la transition vers le low et le sans alcool.</p>
+            </div>
+            <div class="pillar">
+                <x-pillar-icon name="distribuer" />
+                <h3>Distribuer</h3>
+                <p>Nous mettons nos marques, et celles de nos partenaires, en mouvement grâce à nos propres canaux de distribution.</p>
+            </div>
+            <div class="pillar">
+                <x-pillar-icon name="promouvoir" />
+                <h3>Promouvoir</h3>
+                <p>Nous concevons des solutions de promotion et des activations événementielles qui font vivre une marque sur le terrain.</p>
+            </div>
+        </div>
     </section>
 
-    <section class="pillars">
-        <div class="pillar">
-            <h3>Créer</h3>
-            <p>Nous imaginons et concevons des marques et des produits d'apéritif, de l'idée au concept fini.</p>
-        </div>
-        <div class="pillar">
-            <h3>Développer</h3>
-            <p>Nous créons et optimisons des recettes, avec une expertise particulière pour accompagner la transition vers le low et le sans alcool.</p>
-        </div>
-        <div class="pillar">
-            <h3>Distribuer</h3>
-            <p>Nous mettons nos marques, et celles de nos partenaires, en mouvement grâce à nos propres canaux de distribution.</p>
-        </div>
-        <div class="pillar">
-            <h3>Promouvoir</h3>
-            <p>Nous concevons des solutions de promotion et des activations événementielles qui font vivre une marque sur le terrain.</p>
-        </div>
+    <section class="section statement">
+        <p class="statement__text">De la première limonaderie artisanale du canton de Neuchâtel à la création de cocktails sans alcool qui ont conquis la Suisse : FAR est né d'une conviction simple, et d'un savoir-faire acquis sur le terrain, de la recette jusqu'à la machine qui la produit.</p>
+        <a class="link-arrow" href="{{ route_ts('about', ['locale' => app()->getLocale()]) }}">Qui sommes-nous</a>
     </section>
 
-    <section class="callout">
-        <p>Vous êtes brasseur ou vigneron ? Le marché du low et sans alcool devrait croître de 37% d'ici 2027. Découvrez comment FAR peut vous accompagner.</p>
-        <a class="button" href="{{ route_ts('services', ['locale' => app()->getLocale()]) }}">→ Services</a>
+    <section class="section">
+        <div class="callout">
+            <p>Brasseur, vigneron, ou porteur d'un autre projet de boisson ? Découvrez comment FAR peut vous accompagner.</p>
+            <a class="button" href="{{ route_ts('services', ['locale' => app()->getLocale()]) }}">Nos services</a>
+        </div>
     </section>
 
     @if (count($recentPosts) > 0)
-        <section>
-            <h2>Actualités</h2>
+        <section class="section">
+            <p class="section-label">Actualités</p>
             <div class="post-list">
                 @foreach ($recentPosts as $post)
                     <article class="post-list__item">
@@ -72,8 +85,11 @@
                     </article>
                 @endforeach
             </div>
-            <p><a href="{{ route_ts('news.index', ['locale' => app()->getLocale()]) }}">→ Toutes les actualités</a></p>
+            <p class="section-outro">
+                <a class="link-arrow" href="{{ route_ts('news.index', ['locale' => app()->getLocale()]) }}">Toutes les actualités</a>
+            </p>
         </section>
     @endif
+
 </div>
 @endsection
