@@ -166,6 +166,7 @@ return [
     'menu' => 'Menü öffnen',
     'main_nav' => 'Hauptnavigation',
     'country' => 'Schweiz',
+    'choose_language' => 'Sprache wählen',
     'footer_contact' => 'Kontakt',
     'footer_address' => 'Adresse',
     'footer_info' => 'Informationen',

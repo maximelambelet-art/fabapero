@@ -165,6 +165,7 @@ return [
     'menu' => 'Open menu',
     'main_nav' => 'Main navigation',
     'country' => 'Switzerland',
+    'choose_language' => 'Choose language',
     'footer_contact' => 'Contact',
     'footer_address' => 'Address',
     'footer_info' => 'Information',

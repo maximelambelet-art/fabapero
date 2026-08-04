@@ -67,6 +67,24 @@ de la configuration, mots de passe compris.
 Renseigner ensuite le bloc SMTP décrit en commentaire dans `.env.example`
 (le mot de passe de la boîte mail ne doit jamais être committé).
 
+### Faire relire l'allemand et l'anglais sur le site en ligne
+
+Les deux langues sont accessibles sur `/de/` et `/en/` mais restent invisibles :
+`noindex`, absentes du sitemap et du sélecteur de langue. Pour les faire relire
+directement sur le site, passer temporairement :
+
+```
+SHOW_DRAFT_LOCALES=true
+```
+
+Le sélecteur FR / DE / EN apparaît alors dans l'en-tête. **Remettre à `false`
+après la relecture** : sans quoi un vrai prospect peut atterrir sur une
+traduction non validée.
+
+Une fois une langue validée, la déplacer de `draft_locales` vers
+`active_locales` dans `config/site.php` : elle devient indexable, entre dans le
+sitemap et apparaît définitivement dans le sélecteur.
+
 ## 4. Droits d'écriture
 
 Deux dossiers seulement doivent être inscriptibles :

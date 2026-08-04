@@ -1,5 +1,8 @@
 <?php
 
+use App\Support\Blog\BlogRepository;
+use Illuminate\Support\Facades\Route;
+
 if (! function_exists('route_ts')) {
     /**
      * Laravel's route()/url() helpers always strip trailing slashes from
@@ -11,6 +14,57 @@ if (! function_exists('route_ts')) {
     function route_ts(string $name, array $parameters = []): string
     {
         return rtrim(route($name, $parameters), '/').'/';
+    }
+}
+
+if (! function_exists('switchable_locales')) {
+    /**
+     * Locales the language switcher may offer.
+     *
+     * Drafts are left out unless SHOW_DRAFT_LOCALES is on: they carry noindex
+     * so search engines skip them, but a visible link would still walk a real
+     * prospect into a translation nobody has proof-read yet. Turning the flag
+     * on is how the client reviews them, locally or on the deployed site.
+     */
+    function switchable_locales(): array
+    {
+        $locales = config('site.active_locales');
+
+        if (config('site.show_draft_locales')) {
+            $locales = array_merge($locales, config('site.draft_locales'));
+        }
+
+        return $locales;
+    }
+}
+
+if (! function_exists('locale_url')) {
+    /**
+     * The current page in another locale.
+     *
+     * Blog slugs are per-language, so an article has no counterpart in a
+     * locale that has not translated it — falling back to that locale's blog
+     * index beats sending the visitor to a 404.
+     */
+    function locale_url(string $locale): string
+    {
+        $route = Route::currentRouteName();
+        $parameters = request()->route()?->parameters() ?? [];
+
+        if ($route === 'news.show') {
+            $exists = app(BlogRepository::class)
+                ->find($locale, $parameters['slug'] ?? '');
+
+            if (! $exists) {
+                return route_ts('news.index', ['locale' => $locale]);
+            }
+        }
+
+        if (! $route) {
+            return route_ts('home', ['locale' => $locale]);
+        }
+
+        return route_ts($route, array_merge($parameters, ['locale' => $locale]));
     }
 }
 

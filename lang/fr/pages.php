@@ -163,6 +163,7 @@ return [
     'menu' => 'Ouvrir le menu',
     'main_nav' => 'Navigation principale',
     'country' => 'Suisse',
+    'choose_language' => 'Choisir la langue',
     'footer_contact' => 'Contact',
     'footer_address' => 'Adresse',
     'footer_info' => 'Informations',

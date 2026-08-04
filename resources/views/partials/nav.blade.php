@@ -24,6 +24,7 @@
                 <a href="{{ route_ts('services', ['locale' => $locale]) }}" @class(['is-active' => request()->routeIs('services')])>{{ __('nav.services') }}</a>
                 <a href="{{ route_ts('news.index', ['locale' => $locale]) }}" @class(['is-active' => request()->routeIs('news.*')])>{{ __('nav.news') }}</a>
                 <a href="{{ route_ts('contact', ['locale' => $locale]) }}" @class(['site-nav__cta' => true, 'is-active' => request()->routeIs('contact')])>{{ __('nav.contact') }}</a>
+                @include('partials.language-switcher')
             </div>
         </nav>
     </div>

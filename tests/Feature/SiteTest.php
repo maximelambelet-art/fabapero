@@ -78,10 +78,18 @@ class SiteTest extends TestCase
 
     public function test_hreflang_only_announces_published_locales(): void
     {
+        config(['site.show_draft_locales' => true]);
+
         $html = $this->get('/fr/')->assertOk()->getContent();
 
+        // Only <link rel="alternate"> in the head is the search-engine signal.
+        // The switcher's anchors also carry hreflang, which merely describes
+        // the language of what they link to, so the check has to be specific.
         foreach (config('site.draft_locales') as $locale) {
-            $this->assertStringNotContainsString('hreflang="'.$locale.'"', $html);
+            $this->assertStringNotContainsString(
+                '<link rel="alternate" hreflang="'.$locale.'"',
+                $html
+            );
         }
     }
 
@@ -159,6 +167,47 @@ class SiteTest extends TestCase
         ])->assertRedirect();
 
         Mail::assertNothingSent();
+    }
+
+    public function test_language_switcher_keeps_the_visitor_on_the_same_page(): void
+    {
+        config(['site.show_draft_locales' => true]);
+
+        $html = $this->get('/fr/nos-activites/low-et-sans-alcool/')->assertOk()->getContent();
+
+        foreach (['de', 'en'] as $locale) {
+            $this->assertStringContainsString(
+                "/{$locale}/nos-activites/low-et-sans-alcool/",
+                $html
+            );
+        }
+    }
+
+    /**
+     * Blog slugs are per-language, so an article with no counterpart must fall
+     * back to that locale's index rather than link the visitor to a 404.
+     */
+    public function test_language_switcher_falls_back_for_untranslated_articles(): void
+    {
+        config(['site.show_draft_locales' => true]);
+
+        $slug = 'cocktails-sans-alcool-evenements';
+
+        $html = $this->get("/fr/actualites/{$slug}/")->assertOk()->getContent();
+
+        $this->assertStringContainsString('/de/actualites/', $html);
+        $this->assertStringNotContainsString("/de/actualites/{$slug}/", $html);
+    }
+
+    public function test_language_switcher_hides_drafts_by_default(): void
+    {
+        config(['site.show_draft_locales' => false]);
+
+        $this->assertSame(config('site.active_locales'), switchable_locales());
+
+        // With a single locale there is nothing to switch between, so the
+        // control should not be rendered at all.
+        $this->get('/fr/')->assertDontSee('lang-switch', false);
     }
 
     public function test_security_headers_are_present(): void

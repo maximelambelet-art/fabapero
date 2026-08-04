@@ -11,6 +11,11 @@ return [
     // half-reviewed translation must not reach search results.
     'draft_locales' => ['de', 'en'],
 
+    // Whether the language switcher offers the drafts as well. Off by default
+    // so a real prospect is never walked into an unreviewed translation; turn
+    // it on (including in production) while the client proof-reads.
+    'show_draft_locales' => (bool) env('SHOW_DRAFT_LOCALES', false),
+
     'default_locale' => 'fr',
 
     'name' => 'Fabriques d\'Apéro Réunies',
