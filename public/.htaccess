@@ -13,10 +13,12 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
+    # Laravel ships a rule here that strips trailing slashes. This site's URLs
+    # deliberately end in one, and EnsureTrailingSlash redirects the other way,
+    # so the two fought each other into an endless redirect the moment the site
+    # met Apache. Herd serves the site without .htaccess, which is why it only
+    # ever showed up in production. The rule is removed on purpose — do not
+    # restore it from a stock Laravel install.
 
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
