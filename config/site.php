@@ -18,6 +18,13 @@ return [
 
     'default_locale' => 'fr',
 
+    // Open Graph wants language_TERRITORY, not a bare language code.
+    'og_locales' => [
+        'fr' => 'fr_CH',
+        'de' => 'de_CH',
+        'en' => 'en_GB',
+    ],
+
     'name' => 'Fabriques d\'Apéro Réunies',
 
     'legal_name' => 'Fabriques d\'apéro réunies Sàrl',

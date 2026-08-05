@@ -31,6 +31,12 @@
     @if ($currentRouteName)
         <meta property="og:url" content="{{ route_ts($currentRouteName, $currentParams) }}">
     @endif
+    <meta property="og:locale" content="{{ config('site.og_locales.'.app()->getLocale(), 'fr_CH') }}">
+    <meta property="og:image" content="{{ asset('img/og-default.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ config('site.name') }}">
+    <meta name="twitter:card" content="summary_large_image">
 
     @vite('resources/css/app.css')
     @stack('head')

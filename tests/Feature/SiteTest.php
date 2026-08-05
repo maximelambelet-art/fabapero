@@ -210,6 +210,17 @@ class SiteTest extends TestCase
         $this->get('/fr/')->assertDontSee('lang-switch', false);
     }
 
+    public function test_pages_carry_a_shareable_preview_image(): void
+    {
+        $this->get('/fr/')
+            ->assertOk()
+            ->assertSee('property="og:image"', false)
+            ->assertSee('content="summary_large_image"', false)
+            ->assertSee('content="fr_CH"', false);
+
+        $this->assertFileExists(public_path('img/og-default.png'));
+    }
+
     public function test_security_headers_are_present(): void
     {
         $this->get('/fr/')

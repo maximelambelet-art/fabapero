@@ -70,3 +70,12 @@ Toute personne reconnaissable au-delà du fondateur doit avoir donné son accord
 Il n'existe pas de wordmark associé au pictogramme : le nom « Fabriques d'Apéro
 Réunies » est composé typographiquement en Fraunces dans l'en-tête et le pied de
 page.
+
+## Image de partage (Open Graph)
+
+`public/img/og-default.png` est la vignette affichée quand un lien du site est
+partagé sur WhatsApp, LinkedIn ou Slack. Elle a été composée à partir du
+pictogramme et de la typographie de marque (1200×630 px).
+
+À refaire le jour où un logo vectoriel ou une vraie photo est disponible — une
+photo d'atelier ou de produit y serait plus parlante que le fond crème actuel.
