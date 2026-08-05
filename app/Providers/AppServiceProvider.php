@@ -22,6 +22,13 @@ class AppServiceProvider extends ServiceProvider
     {
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
+
+            // The hosting answers on both fabapero.ch and www.fabapero.ch, and
+            // Laravel builds URLs from whichever host was requested — so the
+            // www copy was declaring itself canonical and reading as a second,
+            // duplicate site. Pinning the root to APP_URL makes canonical,
+            // hreflang, the sitemap and Open Graph all name the same host.
+            URL::forceRootUrl(config('app.url'));
         }
     }
 }
